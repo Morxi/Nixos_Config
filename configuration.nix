@@ -25,7 +25,7 @@
   boot.loader.grub.useOSProber = true;
   virtualisation.libvirtd.enable = true;
   programs.dconf.enable = true;
-
+  boot.supportedFilesystems = [ "ntfs" ];
 # virtualisation.oci-containers.backend = "docker";
 #  virtualisation.oci-containers.containers = {
 #    shellclash = {
@@ -53,7 +53,7 @@ services.blueman.enable = true;
   networking.interfaces.wlp2s0.useDHCP = true;
 
   # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
+  networking.proxy.default = "http://127.0.0.1:7890/";
   networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
@@ -65,7 +65,7 @@ services.blueman.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_5_14;
    nixpkgs.config.allowUnfree = true; 
   # Enable the Plasma 5 Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
@@ -83,10 +83,13 @@ services.blueman.enable = true;
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
-
+  virtualisation.libvirtd.enable = true;
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
-
+ i18n.inputMethod = {
+  enabled = "ibus";
+  ibus.engines = with pkgs.ibus-engines; [ rime ];
+ };
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.moxi = {
      isNormalUser = true;
@@ -100,10 +103,7 @@ services.blueman.enable = true;
      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
      firefox
-     virt-manager
   ];
-
-
 
 
   # Some programs need SUID wrappers, can be configured further or are

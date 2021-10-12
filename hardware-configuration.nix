@@ -23,6 +23,11 @@
       fsType = "vfat";
     };
 
+  fileSystems."/data" =
+    { device = "/dev/disk/by-label/BtrFS-Data";
+      fsType = "btrfs";
+    };
+
   swapDevices = [ ];
 
 }
