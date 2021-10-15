@@ -2,10 +2,9 @@
 
 with lib;
 let
-callPackage = path: overrides:
-    let f = import path;
-    in f ((builtins.intersectAttrs (builtins.functionArgs f) allPkgs) // overrides);
-  pkg = callPackage ./supergfxctl.nix { };
+
+  pkg = pkgs.callPackage ./supergfxctl.nix { };
+  cfg = config.services.supergfxd;
 in
 
 {
@@ -23,7 +22,7 @@ in
 
   };
 
-  config = mkIf config.services.supergfxd.enable {
+  config = mkIf cfg.enable {
 
     systemd.services."supergfxd" = {
       enable = true;
@@ -33,21 +32,24 @@ in
       before = [ "multi-user.target" ];
       environment =
         {
-          IS_SUPERGFX_SERVICE = 1;
+          IS_SUPERGFX_SERVICE = "1";
         };
-      type = [ "Dbus" ];
-      ExecStart = ''${pkg}/bin/supergfxd'';
+      serviceConfig =
+        {
+          type = [ "Dbus" ];
+          ExecStart = ''${pkg.supergfx}/bin/supergfxd'';
+        };
 
     };
 
-    services.dbus.packages = [ pkg.supergfxctl ];
+    services.dbus.packages = [ pkg.supergfx ];
 
 
     environment.etc."X11/xorg.conf.d/90-nvidia-screen-G05.conf".source =
-      "${pkg}/share/X11/xorg.conf.d/90-nvidia-screen-G05.conf";
+      "${pkg.supergfx}/share/X11/xorg.conf.d/90-nvidia-screen-G05.conf";
 
-    environment.etc."udev/rules.d/90-supergfxd-nvidia-pm.rules".source =
-      "${pkg}/udev/rules.d/90-supergfxd-nvidia-pm.rules";
+    # environment.etc."udev/rules.d/90-supergfxd-nvidia-pm.rules".source =
+    #   "${pkg.supergfx}/udev/rules.d/90-supergfxd-nvidia-pm.rules";
 
   };
 

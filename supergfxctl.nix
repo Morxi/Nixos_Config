@@ -12,6 +12,7 @@ let
 version = "0.2.4";
   src = builtins.fetchGit {
   url = "https://e.coding.net/morxi/nixpkgs/supergfxctl.git";
+  rev = "2c22e6714aba275385cf2bce5f77dddaacc03a8e";
   ref = "refs/heads/main";
   };
   customBuildRustCrateForPkgs = pkgs: buildRustCrate.override {
