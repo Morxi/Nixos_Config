@@ -17,6 +17,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./supergfxd.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -65,7 +66,9 @@ services.blueman.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_5_14;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  services.supergfxd.enable =true;
    nixpkgs.config.allowUnfree = true; 
   # Enable the Plasma 5 Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
@@ -83,7 +86,6 @@ services.blueman.enable = true;
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
-  virtualisation.libvirtd.enable = true;
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
  i18n.inputMethod = {
