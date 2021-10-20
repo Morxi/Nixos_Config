@@ -1,10 +1,10 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
+
 
   nix = {
     package = pkgs.nixUnstable;
@@ -16,9 +16,11 @@
 
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./supergfxd.nix
+ ./hardware-configuration.nix
+  #    ./supergfxd.nix
     ];
+
+
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -65,16 +67,18 @@ services.blueman.enable = true;
   # };
 
   # Enable the X11 windowing system.
+  boot.kernelParams = ["nvidia-drm.modeset=0"]; 
   services.xserver.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  services.supergfxd.enable =true;
-   nixpkgs.config.allowUnfree = true; 
+  boot.initrd.kernelModules = ["amdgpu"];
+  #services.supergfxd.enable = true;
+  nixpkgs.config.allowUnfree = true; 
   # Enable the Plasma 5 Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-  
-
+  services.xserver.videoDrivers = [ "amdgpu"   "nvidia" ];  
+  hardware.nvidia.modesetting.enable = false;
+  hardware.nvidia.prime.offload.enable= false;
   # Configure keymap in X11
   services.xserver.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e";
@@ -101,11 +105,15 @@ services.blueman.enable = true;
     nix.binaryCaches = [ "https://mirrors.bfsu.edu.cn/nix-channels/store" "https://cache.nixos.org/" ];
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+
+
   environment.systemPackages = with pkgs; [
      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
      firefox
-  ];
+     wineWowPackages.stable
+     yesplaymusic
+];
 
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -134,7 +142,7 @@ services.blueman.enable = true;
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.05"; # Did you read the comment?
+  system.stateVersion = "unstable"; # Did you read the comment?
 
 }
 
