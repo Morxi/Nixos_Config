@@ -16,7 +16,7 @@
 
   imports =
     [ # Include the results of the hardware scan.
- ./hardware-configuration.nix
+       ./hardware-configuration.nix
   #    ./supergfxd.nix
     ];
 
@@ -112,7 +112,6 @@ services.blueman.enable = true;
      wget
      firefox
      wineWowPackages.stable
-     yesplaymusic
 ];
 
 
