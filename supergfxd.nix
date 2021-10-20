@@ -29,6 +29,7 @@ in
       restartIfChanged = true;
       wantedBy = [ "multi-user.target" ];
       description = "SuperGfxd";
+      path = with pkgs; [ kmod ];
       before = [ "multi-user.target" ];
       environment =
         {
@@ -43,7 +44,7 @@ in
     };
 
     services.dbus.packages = [ pkg.supergfx ];
-
+    services.udev.packages = [ pkg.supergfx ];
 
     environment.etc."X11/xorg.conf.d/90-nvidia-screen-G05.conf".source =
       "${pkg.supergfx}/share/X11/xorg.conf.d/90-nvidia-screen-G05.conf";

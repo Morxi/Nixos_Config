@@ -3,8 +3,8 @@
 
   inputs = {
     
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-21.05";
-    home-manager.url = "github:nix-community/home-manager/release-21.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager/master";
     nixos-hardware.url = github:NixOS/nixos-hardware/master; 
 };
   # 引入 nixos-cn flake 作为 inputs
@@ -21,6 +21,8 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
+           ./custom-package.nix
+
 	  nixos-hardware.nixosModules.asus-zephyrus-ga401
           home-manager.nixosModules.home-manager
           {

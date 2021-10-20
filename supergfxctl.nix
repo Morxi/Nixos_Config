@@ -43,14 +43,14 @@ supergfx = stdenv.mkDerivation {
   mkdir -p "$out/etc/systemd/system-preset/"
 	mkdir -p "$out/share/dbus-1/system.d/"
 	mkdir -p "$out/share/X11/xorg.conf.d/"
-	mkdir -p "$out/udev/rules.d/"
+	mkdir -p "$out/lib/udev/rules.d/"
   cp -r ${supergfxctl_bin}/bin $out/
 
 	cp "${src}/data/supergfxd.service" "$out/etc/systemd/system/"
 	cp "${src}/data/supergfxd.preset" "$out/etc/systemd/system-preset/"
 	cp "${src}/data/org.supergfxctl.Daemon.conf" "$out/share/dbus-1/system.d/"
 	cp "${src}/data/90-nvidia-screen-G05.conf" "$out/share/X11/xorg.conf.d/"
-	cp "${src}/data/90-supergfxd-nvidia-pm.rules" "$out/udev/rules.d/"  '';
+	cp "${src}/data/90-supergfxd-nvidia-pm.rules" "$out/lib/udev/rules.d/"  '';
   dontCheck = true;
   dontFixup = true;
   meta = with lib; {
