@@ -57,7 +57,7 @@ services.blueman.enable = true;
 
   # Configure network proxy if necessary
   networking.proxy.default = "http://127.0.0.1:7890/";
-  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  networking.proxy.noProxy = "172.16.0.0/16,192.168.0.0/16,127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "en_US.UTF-8";
