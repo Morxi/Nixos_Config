@@ -17,7 +17,8 @@
   imports =
     [ # Include the results of the hardware scan.
        ./hardware-configuration.nix
-  #    ./supergfxd.nix
+      ./supergfxd.nix
+      ./mount-ga401-combine-disk.nix
     ];
 
 
@@ -26,8 +27,21 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.useOSProber = true;
-  virtualisation.libvirtd.enable = true;
-  programs.dconf.enable = true;
+  virtualisation = {
+  libvirtd = {
+    enable = true;
+    qemuOvmf = true;
+};};
+
+boot.postBootCommands = ''
+    DEVS="0000:01:00.0 0000:01:00.1"
+
+    for DEV in $DEVS; do
+      echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
+    done
+    modprobe -i vfio-pci
+ '';
+programs.dconf.enable = true;
   boot.supportedFilesystems = [ "ntfs" ];
 # virtualisation.oci-containers.backend = "docker";
 #  virtualisation.oci-containers.containers = {
@@ -56,7 +70,7 @@ services.blueman.enable = true;
   networking.interfaces.wlp2s0.useDHCP = true;
 
   # Configure network proxy if necessary
-  networking.proxy.default = "http://127.0.0.1:7890/";
+  networking.proxy.default = "http://192.168.122.246:7890/";
   networking.proxy.noProxy = "172.16.0.0/16,192.168.0.0/16,127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
@@ -67,16 +81,19 @@ services.blueman.enable = true;
   # };
 
   # Enable the X11 windowing system.
-  boot.kernelParams = ["nvidia-drm.modeset=0"]; 
+  boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" ]; 
   services.xserver.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.initrd.kernelModules = ["amdgpu"];
+    boot.kernelModules = [ "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
+  boot.initrd.kernelModules = ["amdgpu" "kvm-amd"];
+ boot.extraModprobeConfig ="options vfio-pci ids=10de:2520,10de:228e";
+
   #services.supergfxd.enable = true;
   nixpkgs.config.allowUnfree = true; 
   # Enable the Plasma 5 Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-  services.xserver.videoDrivers = [ "amdgpu"   "nvidia" ];  
+  services.xserver.videoDrivers = [ "amdgpu" ];  
   hardware.nvidia.modesetting.enable = false;
   hardware.nvidia.prime.offload.enable= false;
   # Configure keymap in X11
@@ -112,6 +129,7 @@ services.blueman.enable = true;
      wget
      firefox
      wineWowPackages.stable
+     virt-manager
 ];
 
 
@@ -127,7 +145,7 @@ services.blueman.enable = true;
 
   # Enable the OpenSSH daemon.
    services.openssh.enable = true;
-
+   services.supergfxd.enable =true;
   # Open ports in the firewall.
    networking.firewall.allowedTCPPorts = [ 22 80 443 8080 ];
    networking.firewall.allowedUDPPorts = [ 53 ];
