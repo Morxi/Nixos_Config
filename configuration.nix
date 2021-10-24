@@ -17,9 +17,7 @@
   imports =
     [ # Include the results of the hardware scan.
        ./hardware-configuration.nix
-      ./supergfxd.nix
-      ./mount-ga401-combine-disk.nix
-      ./virtualisation.nix
+
     ];
 
 
