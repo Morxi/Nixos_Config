@@ -11,7 +11,7 @@ environment.systemPackages = with pkgs; [
 virtualisation.libvirtd = {
   enable = true;
   qemuOvmf = true;
-  qemuRunAsRoot = false;
+  qemuRunAsRoot = true;
   onBoot = "ignore";
   onShutdown = "shutdown";
 };
@@ -19,7 +19,7 @@ virtualisation.libvirtd = {
  	
 
 systemd.tmpfiles.rules = [
-  "f /dev/shm/looking-glass 0660 alex qemu-libvirtd -"
+  "f /dev/shm/looking-glass 0660 moxi qemu-libvirtd -"
 ];
 
 boot.postBootCommands = ''
