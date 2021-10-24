@@ -22,7 +22,7 @@ version = "0.2.4";
       };
     };
   };
-  cargo_nix = import ./Cargo.nix {
+  cargo_nix = import ./supergfx-Cargo.nix {
     inherit pkgs;
     buildRustCrateForPkgs = customBuildRustCrateForPkgs;
   };

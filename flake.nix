@@ -2,11 +2,11 @@
   description = "NixOS configuration";
 
   inputs = {
-    
+
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/master";
-    nixos-hardware.url = github:NixOS/nixos-hardware/master; 
-};
+    nixos-hardware.url = github:NixOS/nixos-hardware/master;
+  };
   # 引入 nixos-cn flake 作为 inputs
   inputs.nixos-cn = {
     url = "github:nixos-cn/flakes";
@@ -14,23 +14,25 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { home-manager, nixpkgs, nixos-hardware, nixos-cn  , ... }: {
-    
+  outputs = { home-manager, nixpkgs, nixos-hardware, nixos-cn, ... }: {
+
     nixosConfigurations = {
       moxi-ga401 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
-           ./custom-package.nix
+          ./moxi-pkgs/custom-package.nix
+          ./moxi-modules/mount-ga401-combine-disk.nix
+          ./moxi-modules/supergfxd.nix
 
-	  nixos-hardware.nixosModules.asus-zephyrus-ga401
+          nixos-hardware.nixosModules.asus-zephyrus-ga401
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.moxi = ./moxi-home.nix;
           }
-    	          ({ ... }: {
+          ({ ... }: {
             # 使用 nixos-cn flake 提供的包
             environment.systemPackages =
               [ nixos-cn.legacyPackages.x86_64-linux.netease-cloud-music ];

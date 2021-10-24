@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
-with lib
+with lib;
 {
   virtualisation = {
     libvirtd = {
@@ -36,4 +36,4 @@ with lib
 #     done
 #     modprobe -i vfio-pci
 #  '';
-};
+}

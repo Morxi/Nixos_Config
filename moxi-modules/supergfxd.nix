@@ -3,7 +3,7 @@
 with lib;
 let
 
-  pkg = pkgs.callPackage ./supergfxctl.nix { };
+  pkg = pkgs.callPackage ../moxi-pkgs/supergfxctl.nix { };
   cfg = config.services.supergfxd;
 in
 
