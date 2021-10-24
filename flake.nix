@@ -24,7 +24,7 @@
           ./moxi-pkgs/custom-package.nix
           ./moxi-modules/mount-ga401-combine-disk.nix
           ./moxi-modules/supergfxd.nix
-
+          ./moxi-modules/virtualisation.nix
           nixos-hardware.nixosModules.asus-zephyrus-ga401
           home-manager.nixosModules.home-manager
           {
