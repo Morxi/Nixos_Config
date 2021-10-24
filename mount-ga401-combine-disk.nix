@@ -1,4 +1,5 @@
-{config , ...} :
+{config , pkgs , lib} :
+with lib;
 {
   systemd.services.mount-win10-disks = {
   script = ''
