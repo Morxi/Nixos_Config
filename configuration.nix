@@ -68,7 +68,7 @@ services.blueman.enable = true;
   # };
 
   # Enable the X11 windowing system.
-  boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" ]; 
+  boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" "hugepagesz=1G" "hugepages=24"]; 
   # services.xserver.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelModules = [ "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
