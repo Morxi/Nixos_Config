@@ -78,8 +78,19 @@ services.blueman.enable = true;
   #services.supergfxd.enable = true;
   nixpkgs.config.allowUnfree = true; 
   # Enable the Plasma 5 Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  # services.xserver.displayManager.sddm.enable = true;
+  #services.xserver.desktopManager.plasma5.enable = true;
+  # services.xserver.desktopManager.gnome.enable = true;
+
+  services.xserver = {
+    enable = true;
+    desktopManager = {
+      xterm.enable = false;
+      xfce.enable = true;
+    };
+    displayManager.defaultSession = "xfce";
+  };
+
   services.xserver.videoDrivers = [ "amdgpu" ];  
   hardware.nvidia.modesetting.enable = false;
   hardware.nvidia.prime.offload.enable= false;
@@ -88,7 +99,7 @@ services.blueman.enable = true;
   # services.xserver.xkbOptions = "eurosign:e";
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  # services.printing.enable = true;
 
     time.hardwareClockInLocalTime = true;
   # Enable sound.
