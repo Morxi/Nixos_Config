@@ -25,9 +25,10 @@ virtualisation.libvirtd = {
     options kvm ignore_msrs=1
   '';
 
-# systemd.tmpfiles.rules = [
-#   "f /dev/shm/looking-glass 0660 moxi qemu-libvirtd -"
-# ];
+systemd.tmpfiles.rules = [
+  "f /dev/shm/scream 0660 moxi qemu-libvirtd -"
+  "f /dev/shm/looking-glass 0660 moxi qemu-libvirtd -"
+];
 
 boot.postBootCommands = ''
     DEVS="0000:01:00.0 0000:01:00.1"
@@ -36,8 +37,15 @@ boot.postBootCommands = ''
       echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
     done
     modprobe -i vfio-pci
-    touch /dev/shm/looking-glass
-    chown moxi:kvm /dev/shm/looking-glass
-    chmod 660 /dev/shm/looking-glass
  '';
+ systemd.user.services.scream-ivshmem = {
+  enable = true;
+  description = "Scream IVSHMEM";
+  serviceConfig = {
+    ExecStart = "${pkgs.scream-receivers}/bin/scream-ivshmem-pulse /dev/shm/scream";
+    Restart = "always";
+  };
+  wantedBy = [ "multi-user.target" ];
+  requires = [ "pulseaudio.service" ];
+};
 }
