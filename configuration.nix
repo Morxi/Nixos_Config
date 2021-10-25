@@ -68,11 +68,11 @@ services.blueman.enable = true;
   # };
 
   # Enable the X11 windowing system.
-  boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" "hugepagesz=1G" "hugepages=24"]; 
+  boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" "pcie_aspm=off"]; 
   # services.xserver.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelModules = [ "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
-  boot.initrd.kernelModules = ["amdgpu" "kvm-amd"];
+  boot.initrd.kernelModules = ["amdgpu" "kvm-amd" "vfio-pci"];
  boot.extraModprobeConfig ="options vfio-pci ids=10de:2520,10de:228e";
 
   #services.supergfxd.enable = true;
@@ -128,6 +128,7 @@ services.blueman.enable = true;
      firefox
      wineWowPackages.stable
      virt-manager
+     scream-receivers
 ];
 
 
