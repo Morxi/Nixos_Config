@@ -69,7 +69,7 @@ services.blueman.enable = true;
 
   # Enable the X11 windowing system.
   boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" ]; 
-  services.xserver.enable = true;
+  # services.xserver.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
     boot.kernelModules = [ "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
   boot.initrd.kernelModules = ["amdgpu" "kvm-amd"];
@@ -99,7 +99,7 @@ services.blueman.enable = true;
   # services.xserver.xkbOptions = "eurosign:e";
 
   # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  services.printing.enable = true;
 
     time.hardwareClockInLocalTime = true;
   # Enable sound.
