@@ -25,6 +25,22 @@ virtualisation.libvirtd = {
     options kvm ignore_msrs=1
   '';
 
+
+
+    boot.extraModulePackages = with config.boot.kernelPackages; [
+      "kvmfr"
+    ];
+    boot.initrd.kernelModules = [ "kvmfr" ];
+
+    boot.kernelParams = optionals cfg.shm.enable [
+      "kvmfr.static_size_mb=128"
+    ];
+
+    services.udev.extraRules = optionals cfg.shm.enable ''
+      SUBSYSTEM=="kvmfr", OWNER="moxi", GROUP="$kvm", MODE="$660"
+    '';
+
+
 systemd.tmpfiles.rules = [
   "f /dev/shm/scream 0660 moxi qemu-libvirtd -"
   "f /dev/shm/looking-glass 0660 moxi qemu-libvirtd -"

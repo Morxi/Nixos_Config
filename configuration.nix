@@ -128,7 +128,7 @@ services.blueman.enable = true;
      firefox
      wineWowPackages.stable
      virt-manager
-     scream-receivers
+     scream
 ];
 
 
