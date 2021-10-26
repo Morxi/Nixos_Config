@@ -37,7 +37,7 @@ virtualisation.libvirtd = {
     ];
 
     services.udev.extraRules =''
-      SUBSYSTEM=="kvmfr", OWNER="moxi", GROUP="$kvm", MODE="$660"
+      SUBSYSTEM=="kvmfr", OWNER="moxi", GROUP="kvm", MODE="660"
     '';
 
 
