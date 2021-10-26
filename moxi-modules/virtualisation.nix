@@ -28,15 +28,15 @@ virtualisation.libvirtd = {
 
 
     boot.extraModulePackages = with config.boot.kernelPackages; [
-      "kvmfr"
+      kvmfr
     ];
     boot.initrd.kernelModules = [ "kvmfr" ];
 
-    boot.kernelParams = optionals cfg.shm.enable [
+    boot.kernelParams = [
       "kvmfr.static_size_mb=128"
     ];
 
-    services.udev.extraRules = optionals cfg.shm.enable ''
+    services.udev.extraRules =''
       SUBSYSTEM=="kvmfr", OWNER="moxi", GROUP="$kvm", MODE="$660"
     '';
 
@@ -54,14 +54,14 @@ boot.postBootCommands = ''
     done
     modprobe -i vfio-pci
  '';
- systemd.user.services.scream-ivshmem = {
-  enable = true;
-  description = "Scream IVSHMEM";
-  serviceConfig = {
-    ExecStart = "${pkgs.scream-receivers}/bin/scream-ivshmem-pulse /dev/shm/scream";
-    Restart = "always";
-  };
-  wantedBy = [ "multi-user.target" ];
-  requires = [ "pulseaudio.service" ];
-};
+#  systemd.user.services.scream-ivshmem = {
+#   enable = true;
+#   description = "Scream IVSHMEM";
+#   serviceConfig = {
+#     ExecStart = "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
+#     Restart = "always";
+#   };
+#   wantedBy = [ "multi-user.target" ];
+#   requires = [ "pulseaudio.service" ];
+# };
 }
