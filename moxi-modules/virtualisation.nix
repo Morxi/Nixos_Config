@@ -37,13 +37,14 @@ virtualisation.libvirtd = {
     ];
 
     services.udev.extraRules =''
-      SUBSYSTEM=="kvmfr", OWNER="moxi", GROUP="kvm", MODE="660"
+      SUBSYSTEM=="kvmfr", OWNER="moxi", GROUP="kvm", MODE="777"
     '';
 
 
 systemd.tmpfiles.rules = [
-  "f /dev/shm/scream 0660 moxi qemu-libvirtd -"
-  "f /dev/shm/looking-glass 0660 moxi qemu-libvirtd -"
+  "f /dev/shm/scream 0660 moxi kvm -"
+  "f /dev/shm/looking-glass 0660 moxi kvm -"
+
 ];
 
 boot.postBootCommands = ''
