@@ -11,41 +11,44 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
-   };
+  };
 
 
   imports =
-    [ # Include the results of the hardware scan.
-       ./hardware-configuration.nix
-
+    [
+      # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+      ./moxi-modules/asus-charging-limit.nix
     ];
 
 
-
+  services.charge-limit.enable = true;
+  services.charge-limit.limits = 80;
+  
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub.useOSProber = true;
 
 
-programs.dconf.enable = true;
+  programs.dconf.enable = true;
   boot.supportedFilesystems = [ "ntfs" ];
-# virtualisation.oci-containers.backend = "docker";
-#  virtualisation.oci-containers.containers = {
-#    shellclash = {
-       
-#       autoStart = true;
-#    };
-# };
+  # virtualisation.oci-containers.backend = "docker";
+  #  virtualisation.oci-containers.containers = {
+  #    shellclash = {
+
+  #       autoStart = true;
+  #    };
+  # };
 
   hardware.bluetooth.enable = true;
-services.blueman.enable = true;
+  services.blueman.enable = true;
 
   networking.hostName = "moxi-ga401"; # Define your hostname.
   #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   # Provide networkmanager for easy wireless configuration.
   networking.networkmanager.enable = true;
-  networking.wireless.enable =  false;
+  networking.wireless.enable = false;
 
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
@@ -68,32 +71,47 @@ services.blueman.enable = true;
   # };
 
   # Enable the X11 windowing system.
-  boot.kernelParams = ["nvidia-drm.modeset=0" "amd_iommu=on" "pcie_aspm=off"]; 
+  boot.kernelParams = [ "nvidia-drm.modeset=0" "amd_iommu=on" "pcie_aspm=off" ];
   # services.xserver.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-    boot.kernelModules = [ "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
-  boot.initrd.kernelModules = ["amdgpu" "kvm-amd" "vfio-pci"];
- boot.extraModprobeConfig ="options vfio-pci ids=10de:2520,10de:228e";
+  boot.kernelPackages = pkgs.linuxPackages_5_14;
+  boot.kernelModules = [ "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
+  boot.initrd.kernelModules = [ "amdgpu" "kvm-amd" "vfio-pci" ];
+  boot.extraModprobeConfig = "options vfio-pci ids=10de:2520,10de:228e";
 
   #services.supergfxd.enable = true;
-  nixpkgs.config.allowUnfree = true; 
+  nixpkgs.config.allowUnfree = true;
   # Enable the Plasma 5 Desktop Environment.
   # services.xserver.displayManager.sddm.enable = true;
   #services.xserver.desktopManager.plasma5.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
 
-  services.xserver = {
-    enable = true;
-    desktopManager = {
-      xterm.enable = false;
-      xfce.enable = true;
-    };
-    displayManager.defaultSession = "xfce";
-  };
+  #  enable XFCE
+  # services.xserver = {
+  #   enable = true;
+  #   desktopManager = {
+  #     xterm.enable = false;
+  #     xfce.enable = true;
+  #   };
+  #   displayManager.defaultSession = "xfce";
+  # };
+  services.xserver =
+    {
+      enable = true;
+      displayManager =
+        {
+          gdm.enable = true;
+        };
+      desktopManager =
+        {
+          gnome.enable = true;
+        };
+          displayManager.defaultSession = "gnome";
 
-  services.xserver.videoDrivers = [ "amdgpu" ];  
+    };
+
+  services.xserver.videoDrivers = [ "amdgpu" ];
   hardware.nvidia.modesetting.enable = false;
-  hardware.nvidia.prime.offload.enable= false;
+  hardware.nvidia.prime.offload.enable = false;
   # Configure keymap in X11
   services.xserver.layout = "us";
   # services.xserver.xkbOptions = "eurosign:e";
@@ -101,35 +119,35 @@ services.blueman.enable = true;
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-    time.hardwareClockInLocalTime = true;
+  time.hardwareClockInLocalTime = true;
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
- i18n.inputMethod = {
-  enabled = "ibus";
-  ibus.engines = with pkgs.ibus-engines; [ rime ];
- };
+  i18n.inputMethod = {
+    enabled = "ibus";
+    ibus.engines = with pkgs.ibus-engines; [ rime ];
+  };
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.moxi = {
-     isNormalUser = true;
-     extraGroups = [ "wheel" "docker" "libvirtd"  ]; # Enable ‘sudo’ for the user.
+    isNormalUser = true;
+    extraGroups = [ "wheel" "docker" "libvirtd" ]; # Enable ‘sudo’ for the user.
   };
 
-    nix.binaryCaches = [ "https://mirrors.bfsu.edu.cn/nix-channels/store" "https://cache.nixos.org/" ];
+  nix.binaryCaches = [ "https://mirrors.bfsu.edu.cn/nix-channels/store" "https://cache.nixos.org/" ];
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
 
   environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-     wget
-     firefox
-     wineWowPackages.stable
-     virt-manager
-     scream
-];
+    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    firefox
+    wineWowPackages.stable
+    virt-manager
+    scream
+  ];
 
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -143,11 +161,11 @@ services.blueman.enable = true;
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-   services.openssh.enable = true;
-   services.supergfxd.enable =true;
+  services.openssh.enable = true;
+  services.supergfxd.enable = true;
   # Open ports in the firewall.
-   networking.firewall.allowedTCPPorts = [ 22 80 443 8080 ];
-   networking.firewall.allowedUDPPorts = [ 53 ];
+  networking.firewall.allowedTCPPorts = [ 22 80 443 8080 ];
+  networking.firewall.allowedUDPPorts = [ 53 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
   # i18n.inputMethod.enabled = "fcitx5";
